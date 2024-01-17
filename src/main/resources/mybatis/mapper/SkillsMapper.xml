@@ -1,0 +1,24 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.app.roster.dao.SkillsMapper">
+
+    <select id="getAllSkills" resultType="com.app.roster.dto.Skill">
+        SELECT * FROM Skills
+    </select>
+
+    <insert id="addSkill" parameterType="com.app.roster.dto.Skill">
+        INSERT INTO Skills (skill)
+        VALUES (#{skill})
+    </insert>
+
+    <update id="updateSkill" parameterType="com.app.roster.dto.Skill">
+        UPDATE Skills
+        SET skill = #{skill}
+        WHERE skillID = #{skillID}
+    </update>
+
+    <delete id="deleteSkill" parameterType="com.app.roster.dto.Skill">
+        DELETE FROM Skills WHERE skillID = #{skillID}
+    </delete>
+
+</mapper>
