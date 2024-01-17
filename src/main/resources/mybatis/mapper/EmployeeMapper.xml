@@ -1,0 +1,25 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.app.roster.dao.EmployeeMapper">
+
+    <select id="getAllEmployees" resultType="java.util.Map">
+        SELECT * FROM employees
+    </select>
+
+    <insert id="addEmployee" parameterType="com.app.roster.dto.Employee">
+        INSERT INTO employees (name, position)
+        VALUES (#{name}, #{position})
+    </insert>
+
+    <update id="updateEmployee" parameterType="com.app.roster.dto.Employee">
+        UPDATE employees
+        SET name = #{name}, position = #{position}
+        WHERE employeeID = #{employeeID}
+    </update>
+
+    <delete id="deleteEmployee" parameterType="com.app.roster.dto.Employee">
+        DELETE FROM employees WHERE employeeID = #{employeeID}
+    </delete>
+
+
+</mapper>
