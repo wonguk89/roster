@@ -3,7 +3,7 @@
 <mapper namespace="com.app.roster.dao.LeaveRequestsMapper">
 
     <select id="getAllLeaveRequests" resultType="com.app.roster.dto.LeaveRequest">
-        SELECT * FROM LeaveRequests
+        SELECT leaveRequestID, employeeID, DATE_FORMAT(leaveDate, '%Y-%m-%d') AS leaveDate, reason FROM LeaveRequests
     </select>
 
     <insert id="addLeaveRequest" parameterType="com.app.roster.dto.LeaveRequest">

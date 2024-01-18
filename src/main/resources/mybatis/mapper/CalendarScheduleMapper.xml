@@ -1,0 +1,24 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.app.roster.dao.CalendarScheduleMapper">
+
+    <select id="getAllCalendarSchedule" resultType="com.app.roster.dto.CalendarSchedule">
+        SELECT sno, DATE_FORMAT(date, '%Y-%m-%d') AS date, skillID, employeeID FROM CalendarSchedule
+    </select>
+
+    <insert id="addCalendarSchedule" parameterType="com.app.roster.dto.CalendarSchedule">
+        INSERT INTO CalendarSchedule (date, skillID, employeeID)
+        VALUES (#{date}, #{skillID}, #{employeeID})
+    </insert>
+
+    <update id="updateCalendarSchedule" parameterType="com.app.roster.dto.CalendarSchedule">
+        UPDATE CalendarSchedule
+        SET date = #{date}, skillID = #{skillID}, employeeID = #{employeeID}
+        WHERE sno = #{sno}
+    </update>
+
+    <delete id="deleteCalendarSchedule" parameterType="com.app.roster.dto.CalendarSchedule">
+        DELETE FROM CalendarSchedule WHERE sno = #{sno}
+    </delete>
+
+</mapper>
