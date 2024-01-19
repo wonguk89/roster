@@ -23,21 +23,18 @@ public class EmployeeService {
 
     public void addEmployee(List<Employee> employees) {
         for (Employee employee : employees) {
-            System.out.println(employee);
             employeeMapper.addEmployee(employee);
         }
     }
 
     public void updateEmployee(List<Employee> employees) {
         for (Employee employee : employees) {
-            System.out.println(employee);
             employeeMapper.updateEmployee(employee);
         }
     }
 
     public void deleteEmployee(List<Employee> employees) {
         for (Employee employee : employees) {
-            System.out.println(employee);
             employeeMapper.deleteEmployee(employee);
         }
     }
