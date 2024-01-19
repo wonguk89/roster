@@ -9,6 +9,8 @@ import java.util.List;
 public interface CalendarScheduleMapper {
     List<CalendarSchedule> getAllCalendarSchedule();
 
+    List<CalendarSchedule> getCalendarScheduleByMonth(String date);
+
     void addCalendarSchedule(CalendarSchedule calendarSchedule);
 
     void updateCalendarSchedule(CalendarSchedule calendarSchedule);

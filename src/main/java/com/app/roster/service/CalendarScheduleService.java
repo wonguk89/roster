@@ -22,6 +22,10 @@ public class CalendarScheduleService {
         return calendarScheduleMapper.getAllCalendarSchedule();
     }
 
+    public List<CalendarSchedule> getCalendarScheduleByMonth(String date) {
+        return calendarScheduleMapper.getCalendarScheduleByMonth(date);
+    }
+
     @Transactional
     public void addCalendarSchedule(List<CalendarSchedule> calendarSchedules) {
         for (CalendarSchedule calendarSchedule : calendarSchedules) {
@@ -42,4 +46,5 @@ public class CalendarScheduleService {
             calendarScheduleMapper.deleteCalendarSchedule(calendarSchedule.getSno());
         }
     }
+
 }

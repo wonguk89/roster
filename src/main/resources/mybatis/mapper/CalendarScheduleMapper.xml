@@ -6,6 +6,14 @@
         SELECT sno, DATE_FORMAT(date, '%Y-%m-%d') AS date, skillID, employeeID FROM CalendarSchedule
     </select>
 
+    <select id="getCalendarScheduleByMonth" parameterType="String" resultType="com.app.roster.dto.CalendarSchedule">
+        SELECT sno, DATE_FORMAT(date, '%Y-%m-%d') AS date, skillID, employeeID
+        FROM CalendarSchedule
+        WHERE date LIKE CONCAT('%', #{date}, '%')
+        ORDER BY date ASC
+    </select>
+
+
     <insert id="addCalendarSchedule" parameterType="com.app.roster.dto.CalendarSchedule">
         INSERT INTO CalendarSchedule (date, skillID, employeeID)
         VALUES (#{date}, #{skillID}, #{employeeID})

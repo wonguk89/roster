@@ -19,13 +19,21 @@ public class CalendarScheduleController {
     public CalendarScheduleController(CalendarScheduleService calendarScheduleService) {
         this.calendarScheduleService = calendarScheduleService;
     }
-
+    // 확정스케쥴 전체목록 조회
     @GetMapping("/getAll")
     public ResponseEntity<List<CalendarSchedule>> getAllCalendarSchedule() {
         List<CalendarSchedule> calendarSchedules = calendarScheduleService.getAllCalendarSchedule();
         return new ResponseEntity<>(calendarSchedules, HttpStatus.OK);
     }
-
+    // 확정스케쥴 월별 조회 (date = "YYYY-MM")
+    @GetMapping("/getByMonth")
+    public ResponseEntity<List<CalendarSchedule>> getAllCalendarScheduleByMonth(
+            @RequestParam(name = "date") String date) {
+        // 프론트엔드에서 이미 날짜를 문자열로 가공해서 전달하므로 추가적인 변환 작업이 필요하지 않음
+        List<CalendarSchedule> calendarSchedules = calendarScheduleService.getCalendarScheduleByMonth(date);
+        return new ResponseEntity<>(calendarSchedules, HttpStatus.OK);
+    }
+    // 확정스케쥴 신규등록
     @PostMapping("/create")
     public ResponseEntity<String> addCalendarSchedule(@RequestBody List<CalendarSchedule> calendarSchedules) {
         try {
@@ -36,7 +44,7 @@ public class CalendarScheduleController {
                     .body("Error adding calendarSchedules: " + e.getMessage());
         }
     }
-
+    // 확정스케쥴 정보수정
     @PutMapping("/update")
     public ResponseEntity<String> updateCalendarSchedule(@RequestBody List<CalendarSchedule> calendarSchedules) {
         try {
@@ -47,7 +55,7 @@ public class CalendarScheduleController {
                     .body("Error updating calendarSchedules: " + e.getMessage());
         }
     }
-
+    // 확정스케쥴 정보삭제
     @DeleteMapping("/delete")
     public ResponseEntity<String> deleteCalendarSchedule(@RequestBody List<CalendarSchedule> calendarSchedules) {
         try {
