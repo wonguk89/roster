@@ -10,7 +10,7 @@
         SELECT sno, DATE_FORMAT(date, '%Y-%m-%d') AS date, skillID, employeeID
         FROM CalendarSchedule
         WHERE date LIKE CONCAT('%', #{date}, '%')
-        ORDER BY date ASC
+        ORDER BY date ASC, skillID ASC
     </select>
 
 

@@ -19,12 +19,12 @@ public class LeaveRequestsController {
     public LeaveRequestsController(LeaveRequestsService leaveRequestsService) {
         this.leaveRequestsService = leaveRequestsService;
     }
-    // 근무타입 전체조회
+    // 휴무신청 전체조회
     @GetMapping("/getAll")
     public List<LeaveRequest> getAllLeaveRequests() {
         return leaveRequestsService.getAllLeaveRequests();
     }
-    // 근무타입 신규등록
+    // 휴무신청 신규등록
     @PostMapping("/create")
     public ResponseEntity<String> addLeaveRequest(@RequestBody List<LeaveRequest> leaveRequests) {
         try {
@@ -35,7 +35,7 @@ public class LeaveRequestsController {
                     .body("Error adding leave requests: " + e.getMessage());
         }
     }
-    // 근무타입 정보수정
+    // 휴무신청 정보수정
     @PutMapping("/update")
     public ResponseEntity<String> updateLeaveRequest(@RequestBody List<LeaveRequest> leaveRequests) {
         try {
@@ -46,7 +46,7 @@ public class LeaveRequestsController {
                     .body("Error updating leave requests: " + e.getMessage());
         }
     }
-    // 근무타입 정보삭제
+    // 휴무신청 정보삭제
     @DeleteMapping("/delete")
     public ResponseEntity<String> deleteLeaveRequest(@RequestBody List<LeaveRequest> leaveRequests) {
         try {

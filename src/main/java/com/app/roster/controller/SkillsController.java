@@ -21,14 +21,14 @@ public class SkillsController {
         this.skillsService = skillsService;
     }
 
-    // skills 전체조회
+    // 근무타입 전체조회
     @GetMapping("/getAll")
     public ResponseEntity<List<Skill>> getAllSkills() {
         List<Skill> skills = skillsService.getAllSkills();
         return new ResponseEntity<>(skills, HttpStatus.OK);
     }
 
-    // skill 신규등록
+    // 근무타입 신규등록
     @PostMapping("/create")
     public ResponseEntity<String> addSkill(@RequestBody List<Skill> skills) {
         try {
@@ -40,7 +40,7 @@ public class SkillsController {
         }
     }
 
-    // skill 정보수정
+    // 근무타입 정보수정
     @PutMapping("/update")
     public ResponseEntity<String> updateSkill(@RequestBody List<Skill> skills) {
         try {
@@ -52,7 +52,7 @@ public class SkillsController {
         }
     }
 
-    // skill 정보삭제
+    // 근무타입 정보삭제
     @DeleteMapping("/delete")
     public ResponseEntity<String> deleteSkill(@RequestBody List<Skill> skills) {
         try {

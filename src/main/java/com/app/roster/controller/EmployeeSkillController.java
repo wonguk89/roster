@@ -20,13 +20,13 @@ public class EmployeeSkillController {
         this.employeeSkillService = employeeSkillService;
     }
 
-    // EmployeeSkill 전체목록 조회
+    // 임직원 가능 근무타입 전체목록 조회
     @GetMapping("/getAll")
     public List<EmployeeSkill> getAllEmployeeSkills() {
         return employeeSkillService.getAllEmployeeSkills();
     }
 
-    // EmployeeSkill 신규등록
+    // 임직원 가능 근무타입 신규등록
     @PostMapping("/create")
     public ResponseEntity<String> addEmployeeSkill(@RequestBody List<EmployeeSkill> employeeSkills) {
         try {
@@ -38,7 +38,7 @@ public class EmployeeSkillController {
         }
     }
 
-    // EmployeeSkill 정보수정
+    // 임직원 가능 근무타입 정보수정
     @PutMapping("/update")
     public ResponseEntity<String> updateEmployeeSkill(@RequestBody List<EmployeeSkill> employeeSkills) {
         try {
@@ -50,7 +50,7 @@ public class EmployeeSkillController {
         }
     }
 
-    // EmployeeSkill 정보삭제
+    // 임직원 가능 근무타입 정보삭제
     @DeleteMapping("/delete")
     public ResponseEntity<String> deleteEmployeeSkill(@RequestBody List<EmployeeSkill> employeeSkills) {
         try {
