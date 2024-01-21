@@ -16,5 +16,4 @@ public interface EmployeeMapper {
 
     void deleteEmployee(Employee employee);
 
-    // 다른 메소드들...
 }

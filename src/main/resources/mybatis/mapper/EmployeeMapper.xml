@@ -13,7 +13,7 @@
 
     <update id="updateEmployee" parameterType="com.app.roster.dto.Employee">
         UPDATE employees
-        SET name = #{name}, position = #{position}
+        SET name = #{name}, position = #{position}, holidayCnt = #{holidayCnt}
         WHERE employeeID = #{employeeID}
     </update>
 

@@ -14,4 +14,5 @@ public class Employee {
     private int employeeID;
     private String name;
     private String position;
+    private int holidayCnt;
 }
