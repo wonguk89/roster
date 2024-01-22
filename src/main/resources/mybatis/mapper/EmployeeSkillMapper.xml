@@ -2,7 +2,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.app.roster.dao.EmployeeSkillMapper">
 
-    <select id="getAllEmployeeSkills" resultType="java.util.Map">
+    <select id="getAllEmployeeSkills" resultType="com.app.roster.dto.EmployeeSkill">
         SELECT * FROM EmployeeSkill
     </select>
 
