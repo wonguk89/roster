@@ -1,6 +1,7 @@
 package com.app.roster.controller;
 
 import com.app.roster.dto.CalendarSchedule;
+import com.app.roster.dto.LeaveRequest;
 import com.app.roster.service.RandomService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

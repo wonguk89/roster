@@ -8,9 +8,11 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalAdjusters;
+import java.time.temporal.WeekFields;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class RandomService {
@@ -41,6 +43,8 @@ public class RandomService {
 
         // 스케줄을 담을 리스트
         List<CalendarSchedule> generatedSchedule = new ArrayList<>();
+        // 직원별로 선택되지 않은 횟수를 저장할 Map
+        Map<Integer, Integer> unselectedCountMap = new HashMap<>();
 
         // 선택된 월의 시작 날짜와 마지막 날짜 계산
         YearMonth selectedYearMonth = YearMonth.parse(selectedMonth);
@@ -56,21 +60,43 @@ public class RandomService {
             // 평일에는 각 스킬 아이디별로 정해진 인원만큼 선택
             // 주말에는 더 많은 인원 선택
             int numberOfEmployees = isWeekend(date.getDayOfWeek()) ? 6 : 4;
-            List<CalendarSchedule> selectedEmployees = getRandomEmployeesWithSkill(employeeSkills, skills, numberOfEmployees, employees, isWeekend(date.getDayOfWeek()));
+            List<CalendarSchedule> selectedEmployees = getRandomEmployeesWithSkill(employeeSkills, skills, numberOfEmployees, employees, isWeekend(date.getDayOfWeek()), date, leaveRequests);
+
 
             // 선택된 직원 및 스킬 아이디 출력
             System.out.print("Selected Employees: ");
-//            for (CalendarSchedule calendarSchedule : selectedEmployees) {
-//                Employee employee = getEmployeeById(employees, calendarSchedule.getEmployeeID());
-//                if (employee != null) {
-//                    System.out.print(employee.getName() + "(" + calendarSchedule.getSkillID() + ") ");
-//                }
-//
-//            }
-            for (CalendarSchedule calendarSchedule : selectedEmployees) {
-                // 이름 대신 employeeID 출력
+            // 이름 대신 employeeID 출력
+/*            for (CalendarSchedule calendarSchedule : selectedEmployees) {
                 System.out.print(calendarSchedule.getEmployeeID() + "(" + calendarSchedule.getSkillID() + ") ");
+            }*/
+
+            // employeeID  대신 이름 출력
+/*            for (CalendarSchedule calendarSchedule : selectedEmployees) {
+                Employee employee = getEmployeeById(employees, calendarSchedule.getEmployeeID());
+                if (employee != null) {
+                    System.out.print(employee.getName() + "(" + calendarSchedule.getSkillID() + ") ");
+                }
+
+            }*/
+            // employeeID  대신 이름 출력 + getSkillID 대신 Skill 출력
+            for (CalendarSchedule calendarSchedule : selectedEmployees) {
+                Employee employee = getEmployeeById(employees, calendarSchedule.getEmployeeID());
+                Skill skill = getSkillById(skills, calendarSchedule.getSkillID());
+
+                if (employee != null && skill != null) {
+                    System.out.print(employee.getName() + "[" + skill.getSkill() + "] ");
+                }
             }
+            // 선택되지 않은 직원의 임플로이 아이디 출력
+            List<Integer> unselectedEmployeeIds = getUnselectedEmployeeIds(employees, selectedEmployees);
+            System.out.print(" Unselected Employees: " + unselectedEmployeeIds);
+
+            // 선택되지 않은 직원들이 몇 번 선택되지 않았는지 집계
+            for (Integer unselectedEmployeeId : unselectedEmployeeIds) {
+                unselectedCountMap.put(unselectedEmployeeId, unselectedCountMap.getOrDefault(unselectedEmployeeId, 0) + 1);
+            }
+
+
 
             System.out.println();
 
@@ -81,7 +107,10 @@ public class RandomService {
 
             // selectedEmployees를 generatedSchedule에 추가
             generatedSchedule.addAll(selectedEmployees);
+            System.out.println();
         }
+        // 각 직원별로 휴무 횟수 출력
+        System.out.println("Holiday Counts by Employee: " + unselectedCountMap);
 
         return generatedSchedule;
     }
@@ -92,7 +121,7 @@ public class RandomService {
         return dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY;
     }
 
-    private List<CalendarSchedule> getRandomEmployeesWithSkill(List<EmployeeSkill> employeeSkills, List<Skill> skills, int numberOfEmployees, List<Employee> employees, boolean isWeekend) {
+    private List<CalendarSchedule> getRandomEmployeesWithSkill(List<EmployeeSkill> employeeSkills, List<Skill> skills, int numberOfEmployees, List<Employee> employees, boolean isWeekend, LocalDate currentDate, List<LeaveRequest> leaveRequests) {
         // 이미 선택된 직원을 기억하는 리스트
         List<Employee> alreadySelectedEmployees = new ArrayList<>();
         // 각 스킬 아이디별로 정해진 인원만큼 선택
@@ -102,6 +131,12 @@ public class RandomService {
             List<Employee> employeesWithSkill = getEmployeesWithSkill(employeeSkills, skills, skillId, employees);
             // 중복 체크를 위해 이미 선택된 직원은 제외
             employeesWithSkill.removeAll(alreadySelectedEmployees);
+
+            // 휴가를 신청한 직원은 제외
+            List<Integer> employeesOnHoliday = getEmployeesOnHoliday(leaveRequests, currentDate);
+            employeesWithSkill.removeIf(employee -> employeesOnHoliday.contains(employee.getEmployeeID()));
+
+
             Collections.shuffle(employeesWithSkill);
             int employeesToSelect = getEmployeesToSelect(numberOfEmployees, skillId, isWeekend);
 
@@ -124,6 +159,7 @@ public class RandomService {
                 alreadySelectedEmployees.clear(); // 기존 선택된 직원 초기화
             }
         }
+
         return selectedEmployees;
     }
 
@@ -188,6 +224,51 @@ public class RandomService {
         }
         return null; // 해당 ID에 매칭되는 직원이 없을 경우
     }
+    private Skill getSkillById(List<Skill> skills, int skillId) {
+        for (Skill skill : skills) {
+            if (skill.getSkillID() == skillId) {
+                return skill;
+            }
+        }
+        return null;
+    }
+    // 휴가를 신청한 직원인지 확인하는 메서드
+    private List<Integer> getEmployeesOnHoliday(List<LeaveRequest> leaveRequests, LocalDate currentDate) {
+        List<Integer> employeesOnHoliday = leaveRequests.stream()
+                .filter(request -> {
+                    // LocalDate를 String으로 변환하여 비교
+                    String requestDate = request.getLeaveDate().toString();
+                    String currentDateStr = currentDate.toString();
+                    return requestDate.equals(currentDateStr);
+                })
+                .map(LeaveRequest::getEmployeeID)
+                .collect(Collectors.toList());
+
+        System.out.println("Employees on holiday on " + currentDate + ": " + employeesOnHoliday);
+        return employeesOnHoliday;
+    }
+    private List<Integer> getUnselectedEmployeeIds(List<Employee> employees, List<CalendarSchedule> selectedEmployees) {
+        List<Integer> allEmployeeIds = employees.stream()
+                .map(Employee::getEmployeeID)
+                .collect(Collectors.toList());
+
+        List<Integer> selectedEmployeeIds = selectedEmployees.stream()
+                .map(CalendarSchedule::getEmployeeID)
+                .collect(Collectors.toList());
+
+        List<Integer> unselectedEmployeeIds = new ArrayList<>(allEmployeeIds);
+        unselectedEmployeeIds.removeAll(selectedEmployeeIds);
+
+        return unselectedEmployeeIds;
+    }
+
+    public List<LeaveRequest> getLeaveRequestsForMonth(List<LeaveRequest> leaveRequests, String selectedMonth) {
+        return leaveRequests.stream()
+                .filter(request -> request.getLeaveDate().startsWith(selectedMonth))
+                .collect(Collectors.toList());
+    }
+
+
 }
 
 
