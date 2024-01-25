@@ -9,8 +9,6 @@ import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalAdjusters;
-import java.time.temporal.WeekFields;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -67,7 +65,7 @@ public class RandomService {
                     (isWeekend(date.getDayOfWeek()) ? "주말" : "평일") + " ");
             boolean isTuesdayOrWednesday = isTuesdayOrWednesday(date);
             // 평일에는 각 스킬 아이디별로 정해진 인원만큼 선택
-            List<CalendarSchedule> selectedEmployees = getRandomEmployeesWithSkill(employeeSkills, skills, employees, isWeekend(date.getDayOfWeek()), isTuesdayOrWednesday, date, randomHoliday);
+            List<CalendarSchedule> selectedEmployees = getRandomEmployeesWithSkill(employeeSkills, skills, employees, isTuesdayOrWednesday, date, randomHoliday);
 
 
             // 선택된 직원 및 스킬 아이디 출력
@@ -124,12 +122,11 @@ public class RandomService {
      * @param employeeSkills        직원과 스킬 관계 목록
      * @param skills                전체 스킬 목록
      * @param employees             전체 직원 목록
-     * @param isWeekend             주말 여부
      * @param currentDate           현재 날짜
      * @param randomHoliday         랜덤 휴무 목록
      * @return 선택된 직원 목록
      */
-    private List<CalendarSchedule> getRandomEmployeesWithSkill(List<EmployeeSkill> employeeSkills, List<Skill> skills, List<Employee> employees, boolean isWeekend, boolean isTuesdayOrWednesday, LocalDate currentDate, List<LeaveRequest> randomHoliday) {
+    private List<CalendarSchedule> getRandomEmployeesWithSkill(List<EmployeeSkill> employeeSkills, List<Skill> skills, List<Employee> employees, boolean isTuesdayOrWednesday, LocalDate currentDate, List<LeaveRequest> randomHoliday) {
         // 이미 선택된 직원을 기억하는 리스트
         List<Employee> alreadySelectedEmployees = new ArrayList<>();
         // 각 스킬 아이디별로 정해진 인원만큼 선택
@@ -146,7 +143,7 @@ public class RandomService {
 
 
             Collections.shuffle(employeesWithSkill);
-            int employeesToSelect = getEmployeesToSelect(skillId, isWeekend,isTuesdayOrWednesday);
+            int employeesToSelect = getEmployeesToSelect(skillId,isTuesdayOrWednesday);
 
             // 선택된 직원을 기억 리스트에 추가
             List<Employee> selectedEmployeesForSkill = employeesWithSkill.subList(0, Math.min(employeesToSelect, employeesWithSkill.size()));
@@ -210,23 +207,11 @@ public class RandomService {
      * 특정 스킬 아이디를 가진 직원들을 선택하는데 필요한 인원을 반환합니다.
      *
      * @param skillId   선택된 스킬 아이디
-     * @param isWeekend 주말 여부
      * @return 선택해야 하는 직원 수
      */
-    private int getEmployeesToSelect(int skillId, boolean isWeekend, boolean isTuesdayOrWednesday) {
-        // 주말인 경우 픽스된 조건으로 인원을 선택
-        if (isWeekend) {
-            if (skillId == 1) {
-                return 2; // 오픈에 2명 선택
-            } else if (skillId == 2) {
-                return 2; // 미들에 2명 선택
-            } else if (skillId == 3) {
-                return 2; // 마감에 2명 선택
-            }
-        }
-        // 평일인 경우 픽스된 조건으로 인원을 선택
-        else {
-            // 화, 수인 경우
+    private int getEmployeesToSelect(int skillId,boolean isTuesdayOrWednesday) {
+
+            // 화, 수인 경우 5명
             if (isTuesdayOrWednesday) {
                 if (skillId == 1) {
                     return 1; // 오픈에 1명 선택
@@ -236,15 +221,15 @@ public class RandomService {
                     return 2; // 마감에 2명 선택
                 }
             } else {
+                // 그외는 6명
                 if (skillId == 1) {
-                    return 1; // 오픈에 1명 선택
+                    return 2; // 오픈에 1명 선택
                 } else if (skillId == 2) {
                     return 2; // 미들에 2명 선택
                 } else if (skillId == 3) {
-                    return 1; // 마감에 1명 선택
+                    return 2; // 마감에 1명 선택
                 }
             }
-        }
         return 0;
     }
 
@@ -483,16 +468,9 @@ public class RandomService {
      */
     private boolean isExceedingMaxEmployeesOnLeave(LocalDate randomDate, Map<LocalDate, Integer> dateCountMap) {
         int count = dateCountMap.getOrDefault(randomDate, 0);
-
-        // 주말 여부 확인 (토요일 또는 일요일)
+        // 화요일,수요일(근무인원5), 나머지(근무인원6)
         DayOfWeek dayOfWeek = randomDate.getDayOfWeek();
-        int maxEmployeesOnLeave = (dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY) ? 2 : 3;
-
-        // 평일이면서 화요일 또는 수요일이면 최대 휴가자 수를 2명으로 설정
-        if (dayOfWeek != DayOfWeek.SATURDAY && dayOfWeek != DayOfWeek.SUNDAY && isTuesdayOrWednesday(randomDate)) {
-            maxEmployeesOnLeave = 2;
-        }
-
+        int maxEmployeesOnLeave =(dayOfWeek == DayOfWeek.TUESDAY || dayOfWeek == DayOfWeek.WEDNESDAY) ? 3 : 2;
         return count >= maxEmployeesOnLeave;
     }
 
