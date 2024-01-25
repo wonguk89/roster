@@ -297,7 +297,6 @@ public class RandomService {
                 .map(LeaveRequest::getEmployeeID)
                 .collect(Collectors.toList());
 
-        //System.out.println("Employees on holiday on " + currentDate + ": " + employeesOnHoliday);
         return employeesOnHoliday;
     }
 
@@ -360,7 +359,6 @@ public class RandomService {
             int employeeLeaveCount = employeeExistingLeaveRequests.size();
             employeeDateCountMap.put(employeeId, employeeLeaveCount);
         }
-
         for (Employee employee : employees) {
             int employeeId = employee.getEmployeeID();
             int holidayCnt = employee.getHolidayCnt() - employeeDateCountMap.getOrDefault(employeeId, 0); // 이미 신청한 휴무 갯수를 빼줌
@@ -410,12 +408,13 @@ public class RandomService {
      */
     private List<LeaveRequest> generateRandomHolidays(String selectedMonth, int employeeId, int holidayCnt, List<LeaveRequest> leaveRequests, Map<LocalDate, Integer> dateCountMap) {
         List<LeaveRequest> randomHolidays = new ArrayList<>();
-
         List<LeaveRequest> employeeExistingLeaveRequests = getEmployeeLeaveRequestsForMonth(leaveRequests, employeeId);
-
+        // employeeExistingLeaveRequests를 randomHolidays에 추가
+        randomHolidays.addAll(employeeExistingLeaveRequests);
         for (int i = 0; i < holidayCnt; i++) {
-            LocalDate randomDate;
-            while (true) {
+            LocalDate randomDate = null;
+            int loopCount = 0;
+            while (loopCount < 100) {
                 randomDate = getRandomDate(selectedMonth);
 
                 // 새롭게 선택된 randomDate에 대한 조건 검사
@@ -423,6 +422,13 @@ public class RandomService {
                         !isExceedingMaxEmployeesOnLeave(randomDate, dateCountMap) &&
                         !isExceedingMaxInterval(randomDate, randomHolidays, 7)) {
                     break; // 조건을 만족하면 while 루프 종료
+                }
+
+                loopCount++;
+
+                if (loopCount >= 100) {
+                    // 100회 이상 반복했을 때 RuntimeException 발생
+                    throw new RuntimeException("스케쥴 생성에 실패하였습니다, 다시 시도해주세요.");
                 }
             }
             // 휴가 생성 및 리스트에 추가
