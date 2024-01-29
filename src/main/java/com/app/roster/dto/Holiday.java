@@ -11,5 +11,4 @@ public class Holiday {
     private int holidayID;
     private String holidayDate;
     private String description;
-    private int workforce;
 }

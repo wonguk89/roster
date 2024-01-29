@@ -42,7 +42,7 @@ public class RandomService {
         List<Employee> employees = employeeService.getAllEmployees();
         List<Skill> skills = skillsService.getAllSkills();
         List<EmployeeSkill> employeeSkills = employeeSkillService.getAllEmployeeSkills();
-        List<Holiday> holidays = holidayService.getAllHolidays();
+        List<Holiday> holidays = holidayService.getHolidaysByMonth(selectedMonth);
         List<LeaveRequest> leaveRequests = leaveRequestsService.getAllLeaveRequests();
 
         // holidayCnt 만큼 휴무일 랜덤지정
@@ -65,7 +65,7 @@ public class RandomService {
                     (isWeekend(date.getDayOfWeek()) ? "주말" : "평일") + " ");
             boolean isTuesdayOrWednesday = isTuesdayOrWednesday(date);
             // 평일에는 각 스킬 아이디별로 정해진 인원만큼 선택
-            List<CalendarSchedule> selectedEmployees = getRandomEmployeesWithSkill(employeeSkills, skills, employees, isTuesdayOrWednesday, date, randomHoliday);
+            List<CalendarSchedule> selectedEmployees = getRandomEmployeesWithSkill(employeeSkills, skills, employees, isTuesdayOrWednesday, date, randomHoliday,holidays);
 
 
             // 선택된 직원 및 스킬 아이디 출력
@@ -126,7 +126,7 @@ public class RandomService {
      * @param randomHoliday         랜덤 휴무 목록
      * @return 선택된 직원 목록
      */
-    private List<CalendarSchedule> getRandomEmployeesWithSkill(List<EmployeeSkill> employeeSkills, List<Skill> skills, List<Employee> employees, boolean isTuesdayOrWednesday, LocalDate currentDate, List<LeaveRequest> randomHoliday) {
+    private List<CalendarSchedule> getRandomEmployeesWithSkill(List<EmployeeSkill> employeeSkills, List<Skill> skills, List<Employee> employees, boolean isTuesdayOrWednesday, LocalDate currentDate, List<LeaveRequest> randomHoliday, List<Holiday> holidays) {
         // 이미 선택된 직원을 기억하는 리스트
         List<Employee> alreadySelectedEmployees = new ArrayList<>();
         // 각 스킬 아이디별로 정해진 인원만큼 선택
@@ -143,7 +143,7 @@ public class RandomService {
 
 
             Collections.shuffle(employeesWithSkill);
-            int employeesToSelect = getEmployeesToSelect(skillId,isTuesdayOrWednesday);
+            int employeesToSelect = getEmployeesToSelect(skillId,isTuesdayOrWednesday,currentDate,holidays);
 
             // 선택된 직원을 기억 리스트에 추가
             List<Employee> selectedEmployeesForSkill = employeesWithSkill.subList(0, Math.min(employeesToSelect, employeesWithSkill.size()));
@@ -204,34 +204,61 @@ public class RandomService {
     }
 
     /**
-     * 특정 스킬 아이디를 가진 직원들을 선택하는데 필요한 인원을 반환합니다.
+     * 특정 날짜와 스킬에 따라 선택해야 하는 직원 수를 결정합니다.
+     * 휴일인 경우 0명을 반환합니다.
      *
-     * @param skillId   선택된 스킬 아이디
-     * @return 선택해야 하는 직원 수
+     * @param skillId             스킬 ID (1, 2 또는 3).
+     * @param isTuesdayOrWednesday 화요일 또는 수요일인 경우 true, 그 외의 경우 false.
+     * @param date                직원 수를 결정할 날짜.
+     * @param holidays            해당 날짜에 대한 워크포스 정보를 포함하는 휴일 목록.
+     * @return 선택해야 하는 직원 수.
      */
-    private int getEmployeesToSelect(int skillId,boolean isTuesdayOrWednesday) {
+    private int getEmployeesToSelect(int skillId, boolean isTuesdayOrWednesday, LocalDate date, List<Holiday> holidays) {
+        // 휴일인지 확인
+        if (isHoliday(date, holidays)) {
+            return 0; // 휴일인 경우
+        }
 
-            // 화, 수인 경우 5명
-            if (isTuesdayOrWednesday) {
-                if (skillId == 1) {
-                    return 1; // 오픈에 1명 선택
-                } else if (skillId == 2) {
-                    return 2; // 미들에 2명 선택
-                } else if (skillId == 3) {
-                    return 2; // 마감에 2명 선택
-                }
-            } else {
-                // 그외는 6명
-                if (skillId == 1) {
-                    return 2; // 오픈에 1명 선택
-                } else if (skillId == 2) {
-                    return 2; // 미들에 2명 선택
-                } else if (skillId == 3) {
-                    return 2; // 마감에 1명 선택
-                }
+        // 화, 수인 경우 5명
+        if (isTuesdayOrWednesday) {
+            if (skillId == 1) {
+                return 1; // 오픈에 1명 선택
+            } else if (skillId == 2) {
+                return 2; // 미들에 2명 선택
+            } else if (skillId == 3) {
+                return 2; // 마감에 2명 선택
             }
+        } else {
+            // 그외는 6명
+            if (skillId == 1) {
+                return 2; // 오픈에 1명 선택
+            } else if (skillId == 2) {
+                return 2; // 미들에 2명 선택
+            } else if (skillId == 3) {
+                return 2; // 마감에 1명 선택
+            }
+        }
+
         return 0;
     }
+
+    /**
+     * 주어진 날짜가 휴일인지를 확인합니다.
+     * 제공된 휴일 목록과 비교하여 휴일이면 true를 반환합니다.
+     *
+     * @param date     휴일 여부를 확인할 날짜.
+     * @param holidays 특정 날짜에 대한 정보를 포함하는 휴일 목록.
+     * @return 날짜가 휴일이면 true, 그렇지 않으면 false.
+     */
+    private boolean isHoliday(LocalDate date, List<Holiday> holidays) {
+        for (Holiday holiday : holidays) {
+            if (holiday.getHolidayDate().equals(date.toString())) {
+                return true; // 휴일인 경우
+            }
+        }
+        return false; // 휴일이 아닌 경우
+    }
+
 
     /**
      * 현재 날짜가 화요일 또는 수요일인지 확인합니다.
