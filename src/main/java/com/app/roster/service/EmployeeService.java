@@ -61,4 +61,14 @@ public class EmployeeService {
             employeeMapper.deleteEmployee(employee);
         }
     }
+
+    /**
+     * 주어진 직원 ID에 해당하는 직원을 가져옵니다.
+     *
+     * @param employeeID 가져올 직원의 ID
+     * @return 직원 객체, 해당 ID에 해당하는 직원이 없을 경우 null 반환
+     */
+    public Employee getEmployeeById(int employeeID) {
+        return employeeMapper.getEmployeeById(employeeID);
+    }
 }

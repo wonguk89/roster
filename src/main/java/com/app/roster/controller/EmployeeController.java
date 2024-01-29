@@ -1,6 +1,7 @@
 package com.app.roster.controller;
 
 
+import java.util.Collections;
 import java.util.List;
 
 import com.app.roster.dto.Employee;
@@ -57,6 +58,27 @@ public class EmployeeController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Error deleting employees: " + e.getMessage());
+        }
+    }
+
+    // 임직원 추가 또는 업데이트
+    @PostMapping("/addOrUpdate")
+    public ResponseEntity<String> addOrUpdateEmployee(@RequestBody List<Employee> employees) {
+        try {
+            for (Employee employee : employees) {
+                // Check if employee with the same ID exists in the database
+                if (employeeService.getEmployeeById(employee.getEmployeeID()) != null) {
+                    // If exists, update the employee
+                    employeeService.updateEmployee(Collections.singletonList(employee));
+                } else {
+                    // If not exists, add the employee
+                    employeeService.addEmployee(Collections.singletonList(employee));
+                }
+            }
+            return ResponseEntity.ok("Employees added or updated successfully");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error adding or updating employees: " + e.getMessage());
         }
     }
 }

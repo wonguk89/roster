@@ -16,4 +16,5 @@ public interface EmployeeMapper {
 
     void deleteEmployee(Employee employee);
 
+    Employee getEmployeeById(int employeeID);
 }

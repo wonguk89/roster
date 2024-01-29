@@ -21,5 +21,10 @@
         DELETE FROM employees WHERE employeeID = #{employeeID}
     </delete>
 
+    <select id="getEmployeeById" resultType="com.app.roster.dto.Employee">
+        SELECT * FROM employees
+        WHERE employeeID = #{employeeID}
+    </select>
+
 
 </mapper>
