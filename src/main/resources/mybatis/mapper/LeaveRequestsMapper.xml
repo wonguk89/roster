@@ -6,6 +6,14 @@
         SELECT leaveRequestID, employeeID, DATE_FORMAT(leaveDate, '%Y-%m-%d') AS leaveDate, reason FROM LeaveRequests
     </select>
 
+    <select id="getLeaveRequestsByMonth" parameterType="String" resultType="com.app.roster.dto.LeaveRequest">
+        SELECT leaveRequestID, employeeID, DATE_FORMAT(leaveDate, '%Y-%m-%d') AS leaveDate, reason
+        FROM LeaveRequests
+        WHERE DATE_FORMAT(leaveDate, '%Y-%m') = #{date}
+        ORDER BY leaveDate ASC, leaveRequestID ASC
+    </select>
+
+
     <insert id="addLeaveRequest" parameterType="com.app.roster.dto.LeaveRequest">
         INSERT INTO LeaveRequests (employeeID, leaveDate, reason)
         VALUES (#{employeeID}, #{leaveDate}, #{reason})

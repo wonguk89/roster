@@ -29,6 +29,17 @@ public class LeaveRequestsService {
     public List<LeaveRequest> getAllLeaveRequests() {
         return leaveRequestsMapper.getAllLeaveRequests();
     }
+    
+    /**
+     * 주어진 달에 해당하는 휴가 신청 정보를 조회합니다.
+     *
+     * @param date 조회하고자 하는 달 (형식: "YYYY-MM")
+     * @return 해당 달의 휴가 신청 정보 목록
+     */
+    public List<LeaveRequest> getLeaveRequestsByMonth(String date) {
+        return leaveRequestsMapper.getLeaveRequestsByMonth(date);
+    }
+
 
     /**
      * 휴가 신청 정보를 추가합니다.
@@ -65,4 +76,5 @@ public class LeaveRequestsService {
             leaveRequestsMapper.deleteLeaveRequest(leaveRequest.getLeaveRequestID());
         }
     }
+
 }

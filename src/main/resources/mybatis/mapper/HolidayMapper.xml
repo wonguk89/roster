@@ -6,6 +6,13 @@
         SELECT * FROM holiday
     </select>
 
+    <select id="getHolidaysByMonth" parameterType="String" resultType="com.app.roster.dto.Holiday">
+        SELECT holidayID, DATE_FORMAT(holidayDate, '%Y-%m-%d') AS holidayDate, description, workforce
+        FROM holiday
+        WHERE DATE_FORMAT(holidayDate, '%Y-%m') = #{date}
+        ORDER BY holidayDate ASC, holidayID ASC
+    </select>
+
     <insert id="addHoliday" parameterType="com.app.roster.dto.Holiday">
         INSERT INTO holiday (holidayDate, description, workforce)
         VALUES (#{holidayDate}, #{description}, #{workforce})

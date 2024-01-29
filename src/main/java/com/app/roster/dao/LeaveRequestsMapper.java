@@ -9,6 +9,8 @@ import java.util.List;
 public interface LeaveRequestsMapper {
     List<LeaveRequest> getAllLeaveRequests();
 
+    List<LeaveRequest> getLeaveRequestsByMonth(String date);
+
     void addLeaveRequest(LeaveRequest leaveRequest);
 
     void updateLeaveRequest(LeaveRequest leaveRequest);

@@ -24,6 +24,21 @@ public class LeaveRequestsController {
     public List<LeaveRequest> getAllLeaveRequests() {
         return leaveRequestsService.getAllLeaveRequests();
     }
+    // 휴무신청 월별 조회 (date = "YYYY-MM")
+    @GetMapping("/getByMonth")
+    public ResponseEntity<?> getLeaveRequestsByMonth(
+            @RequestParam(name = "date") String date) {
+        try {
+            List<LeaveRequest> leaveRequests = leaveRequestsService.getLeaveRequestsByMonth(date);
+            return new ResponseEntity<>(leaveRequests, HttpStatus.OK);
+        } catch (Exception e) {
+            // 실제로는 더 많은 디테일한 정보를 로깅하거나 분석할 수 있습니다.
+            String errorMessage = "Error getting leave requests for the month.";
+            return new ResponseEntity<>(errorMessage, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
     // 휴무신청 신규등록
     @PostMapping("/create")
     public ResponseEntity<String> addLeaveRequest(@RequestBody List<LeaveRequest> leaveRequests) {

@@ -26,6 +26,20 @@ public class HolidayController {
         return holidayService.getAllHolidays();
     }
 
+    // 선택된 달의 공휴일 목록 조회
+    @GetMapping("/getByMonth")
+    public ResponseEntity<?> getHolidaysByMonth(
+            @RequestParam(name = "date") String date) {
+        try {
+            // 날짜를 문자열로 가공해서 전달하므로 추가적인 변환 작업이 필요하지 않음
+            List<Holiday> holidays = holidayService.getHolidaysByMonth(date);
+            return new ResponseEntity<>(holidays, HttpStatus.OK);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error getting holidays for the month: " + e.getMessage());
+        }
+    }
+
     // 새로운 공휴일 등록
     @PostMapping("/create")
     public ResponseEntity<String> addHoliday(@RequestBody List<Holiday> holidays) {

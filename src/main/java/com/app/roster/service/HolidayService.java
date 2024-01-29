@@ -30,6 +30,17 @@ public class HolidayService {
     }
 
     /**
+     * 선택된 달의 공휴일 목록을 조회합니다.
+     *
+     * @param date 선택된 달 (형식: "YYYY-MM")
+     * @return 선택된 달의 공휴일 목록
+     */
+
+    public List<Holiday> getHolidaysByMonth(String date) {
+        return holidayMapper.getHolidaysByMonth(date);
+    }
+
+    /**
      * 휴일 정보를 추가합니다.
      *
      * @param holidays 추가할 휴일 정보 목록
@@ -61,4 +72,5 @@ public class HolidayService {
             holidayMapper.deleteHoliday(holiday);
         }
     }
+
 }

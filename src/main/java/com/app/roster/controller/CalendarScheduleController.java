@@ -27,11 +27,16 @@ public class CalendarScheduleController {
     }
     // 확정스케쥴 월별 조회 (date = "YYYY-MM")
     @GetMapping("/getByMonth")
-    public ResponseEntity<List<CalendarSchedule>> getAllCalendarScheduleByMonth(
+    public ResponseEntity<?> getAllCalendarScheduleByMonth(
             @RequestParam(name = "date") String date) {
-        // 프론트엔드에서 이미 날짜를 문자열로 가공해서 전달하므로 추가적인 변환 작업이 필요하지 않음
-        List<CalendarSchedule> calendarSchedules = calendarScheduleService.getCalendarScheduleByMonth(date);
-        return new ResponseEntity<>(calendarSchedules, HttpStatus.OK);
+        try {
+            // 프론트엔드에서 이미 날짜를 문자열로 가공해서 전달하므로 추가적인 변환 작업이 필요하지 않음
+            List<CalendarSchedule> calendarSchedules = calendarScheduleService.getCalendarScheduleByMonth(date);
+            return new ResponseEntity<>(calendarSchedules, HttpStatus.OK);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error getting calendar schedules for the month: " + e.getMessage());
+        }
     }
     // 확정스케쥴 신규등록
     @PostMapping("/create")

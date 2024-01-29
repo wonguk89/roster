@@ -9,9 +9,12 @@ import java.util.List;
 public interface HolidayMapper {
     List<Holiday> getAllHolidays();
 
+    List<Holiday> getHolidaysByMonth(String date);
+
     void addHoliday(Holiday holiday);
 
     void updateHoliday(Holiday holiday);
 
     void deleteHoliday(Holiday holiday);
+
 }
