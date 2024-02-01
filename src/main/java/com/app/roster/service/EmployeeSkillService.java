@@ -57,4 +57,8 @@ public class EmployeeSkillService {
             employeeSkillMapper.deleteEmployeeSkill(employeeSkill);
         }
     }
+
+    public boolean existsEmployeeSkill(EmployeeSkill employeeSkill) {
+        return employeeSkillMapper.existsEmployeeSkill(employeeSkill);
+    }
 }

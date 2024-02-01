@@ -21,4 +21,12 @@
         DELETE FROM EmployeeSkill WHERE employeeID = #{employeeID} AND skillID = #{skillID}
     </delete>
 
+    <select id="existsEmployeeSkill" parameterType="com.app.roster.dto.EmployeeSkill" resultType="java.lang.Boolean">
+        SELECT EXISTS (
+            SELECT 1
+            FROM EmployeeSkill
+            WHERE employeeID = #{employeeID} AND skillID = #{skillID}
+        ) AS result
+    </select>
+
 </mapper>

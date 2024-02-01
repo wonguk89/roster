@@ -14,4 +14,6 @@ public interface EmployeeSkillMapper {
     void updateEmployeeSkill(EmployeeSkill employeeSkill);
 
     void deleteEmployeeSkill(EmployeeSkill employeeSkill);
+
+    boolean existsEmployeeSkill(EmployeeSkill employeeSkill);
 }
