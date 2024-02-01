@@ -1,5 +1,6 @@
 package com.app.roster.controller;
 
+import com.app.roster.dto.Employee;
 import com.app.roster.dto.Holiday;
 import com.app.roster.service.HolidayService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.List;
 
 @RestController
@@ -66,13 +68,33 @@ public class HolidayController {
 
     // 공휴일 정보 삭제
     @DeleteMapping("/delete")
-    public ResponseEntity<String> deleteHoliday(@RequestBody List<Holiday> holidays) {
+    public ResponseEntity<String> deleteHoliday(@RequestParam(name = "holidayID") List<Integer> holidayIDs) {
         try {
-            holidayService.deleteHoliday(holidays);
+            holidayService.deleteHoliday(holidayIDs);
             return ResponseEntity.ok("Holidays deleted successfully");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Error deleting holidays: " + e.getMessage());
+        }
+    }
+
+    @PostMapping("/addOrUpdate")
+    public ResponseEntity<String> addOrUpdate(@RequestBody List<Holiday> holidays) {
+        try {
+            for (Holiday holiday : holidays) {
+                // Check if employee with the same ID exists in the database
+                if (holidayService.getEmployeeById(holiday.getHolidayID()) != null) {
+                    // If exists, update the employee
+                    holidayService.updateHoliday(Collections.singletonList(holiday));
+                } else {
+                    // If not exists, add the employee
+                    holidayService.addHoliday(Collections.singletonList(holiday));
+                }
+            }
+            return ResponseEntity.ok("Holidays added or updated successfully");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error adding or updating Holidays: " + e.getMessage());
         }
     }
 }

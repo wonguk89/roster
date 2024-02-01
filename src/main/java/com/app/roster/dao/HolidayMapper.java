@@ -15,6 +15,7 @@ public interface HolidayMapper {
 
     void updateHoliday(Holiday holiday);
 
-    void deleteHoliday(Holiday holiday);
+    void deleteHoliday(int holidayID);
 
+    Holiday getEmployeeById(int holidayID);
 }

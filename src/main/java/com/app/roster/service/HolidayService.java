@@ -67,10 +67,14 @@ public class HolidayService {
      *
      * @param holidays 삭제할 휴일 정보 목록
      */
-    public void deleteHoliday(List<Holiday> holidays) {
-        for (Holiday holiday : holidays) {
-            holidayMapper.deleteHoliday(holiday);
+    public void deleteHoliday(List<Integer> holidayIDs) {
+        for (Integer holidayID : holidayIDs) {
+            holidayMapper.deleteHoliday(holidayID);
         }
     }
 
+
+    public Holiday getEmployeeById(int holidayID) {
+        return holidayMapper.getEmployeeById(holidayID);
+    }
 }

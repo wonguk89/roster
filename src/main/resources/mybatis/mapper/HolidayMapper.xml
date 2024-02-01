@@ -24,8 +24,12 @@
         WHERE holidayID = #{holidayID}
     </update>
 
-    <delete id="deleteHoliday" parameterType="com.app.roster.dto.Holiday">
+    <delete id="deleteHoliday" parameterType="int">
         DELETE FROM holiday WHERE holidayID = #{holidayID}
     </delete>
+
+    <select id="getEmployeeById" parameterType="int" resultType="com.app.roster.dto.Holiday">
+        SELECT * FROM holiday WHERE holidayID = #{holidayID}
+    </select>
 
 </mapper>
