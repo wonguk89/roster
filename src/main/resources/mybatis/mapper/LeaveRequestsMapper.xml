@@ -28,5 +28,9 @@
     <delete id="deleteLeaveRequest" parameterType="com.app.roster.dto.LeaveRequest">
         DELETE FROM LeaveRequests WHERE leaveRequestID = #{leaveRequestID}
     </delete>
+    <select id="checkDuplicateLeaveRequest" parameterType="map" resultType="int">
+        SELECT COUNT(*) FROM LeaveRequests
+        WHERE employeeID = #{employeeID} AND DATE_FORMAT(leaveDate, '%Y-%m-%d') = #{leaveDate}
+    </select>
 
 </mapper>

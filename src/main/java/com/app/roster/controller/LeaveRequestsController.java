@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.List;
 
 @RestController
@@ -72,4 +73,22 @@ public class LeaveRequestsController {
                     .body("Error deleting leave requests: " + e.getMessage());
         }
     }
+    @PostMapping("/checkAndAdd")
+    public ResponseEntity<String> checkAndAddLeaveRequests(@RequestBody LeaveRequest leaveRequest) {
+        try {
+            // Check if a leave request with the same employeeID and leaveDate exists in the database
+            if (leaveRequestsService.checkDuplicateLeaveRequest(leaveRequest.getEmployeeID(), leaveRequest.getLeaveDate()) > 0) {
+                // If exists, return an error (you can customize the error message)
+                return ResponseEntity.ok(leaveRequest.getLeaveDate()+" 에 이미 해당직원이 신청되어있습니다");
+            } else {
+                // If not exists, add the leave request
+                leaveRequestsService.addLeaveRequests(Collections.singletonList(leaveRequest));
+                return ResponseEntity.ok("저장되었습니다");
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error checking and adding leave request: " + e.getMessage());
+        }
+    }
+
 }

@@ -6,7 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 휴가 신청 정보를 관리하는 서비스 클래스입니다.
@@ -77,4 +79,10 @@ public class LeaveRequestsService {
         }
     }
 
+    public int checkDuplicateLeaveRequest(int employeeID, String leaveDate) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("employeeID", employeeID);
+        params.put("leaveDate", leaveDate);
+        return leaveRequestsMapper.checkDuplicateLeaveRequest(params);
+    }
 }

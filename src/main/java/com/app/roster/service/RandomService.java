@@ -392,7 +392,7 @@ public class RandomService {
 
             // 남은 휴가가 0 이하인 경우 랜덤 휴무를 추가하지 않음
             if (holidayCnt > 0) {
-                List<LeaveRequest> employeeRandomLeaveRequests = generateRandomHolidays(selectedMonth, employeeId, holidayCnt, leaveRequests, dateCountMap);
+                List<LeaveRequest> employeeRandomLeaveRequests = generateRandomHolidays(selectedMonth, employeeId, holidayCnt, leaveRequests, dateCountMap, existingLeaveRequests);
                 allRandomLeaveRequests.addAll(employeeRandomLeaveRequests);
             }
         }
@@ -433,9 +433,9 @@ public class RandomService {
      * @param dateCountMap      휴가 신청 날짜 카운트 맵
      * @return 생성된 랜덤 휴가 신청 목록
      */
-    private List<LeaveRequest> generateRandomHolidays(String selectedMonth, int employeeId, int holidayCnt, List<LeaveRequest> leaveRequests, Map<LocalDate, Integer> dateCountMap) {
+    private List<LeaveRequest> generateRandomHolidays(String selectedMonth, int employeeId, int holidayCnt, List<LeaveRequest> leaveRequests, Map<LocalDate, Integer> dateCountMap,List<LeaveRequest> existingLeaveRequests) {
         List<LeaveRequest> randomHolidays = new ArrayList<>();
-        List<LeaveRequest> employeeExistingLeaveRequests = getEmployeeLeaveRequestsForMonth(leaveRequests, employeeId);
+        List<LeaveRequest> employeeExistingLeaveRequests = getEmployeeLeaveRequestsForMonth(existingLeaveRequests, employeeId);
         // employeeExistingLeaveRequests를 randomHolidays에 추가
         randomHolidays.addAll(employeeExistingLeaveRequests);
         for (int i = 0; i < holidayCnt; i++) {
@@ -454,9 +454,8 @@ public class RandomService {
                 loopCount++;
 
                 if (loopCount >= 100) {
-                    // 100회 이상 반복했을 때 RuntimeException 발생
-                    throw new RuntimeException("스케쥴 생성에 실패하였습니다, 다시 시도해주세요.");
-                }
+                        throw new RuntimeException("스케쥴 생성에 실패하였습니다, 다시 시도해주세요.");
+                    }
             }
             // 휴가 생성 및 리스트에 추가
             LeaveRequest randomHoliday = new LeaveRequest();
@@ -532,7 +531,6 @@ public class RandomService {
                 .filter(request -> request.getEmployeeID() == employeeId)
                 .collect(Collectors.toList());
     }
-
     /**
      * 주어진 휴가 신청 목록에서 날짜별 휴가 신청 횟수를 카운트하고 반환합니다.
      *
