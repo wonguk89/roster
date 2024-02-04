@@ -4,11 +4,10 @@
 <p align="center">
 <img src="https://github.com/wonguk89/roster/assets/112766179/eef4d506-4c22-4b3a-8b2e-ff0b9bd59013" width="900px" height="300px">
 </p>
-&nbsp;
 
-
+___
 &nbsp;
-[FrontEnd 보러가기](https://github.com/wonguk89/roster_front)
+[BackEnd 보러가기](https://github.com/wonguk89/roster)
 >스케쥴 생성 조건
 
 
