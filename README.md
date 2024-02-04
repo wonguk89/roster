@@ -2,7 +2,7 @@
 
 
 <p align="center">
-<img src="https://github.com/wonguk89/roster/assets/112766179/eef4d506-4c22-4b3a-8b2e-ff0b9bd59013" width="600px" height="200px">
+<img src="https://github.com/wonguk89/roster/assets/112766179/eef4d506-4c22-4b3a-8b2e-ff0b9bd59013" width="1200px" height="400px">
 </p>
 &nbsp;
 
