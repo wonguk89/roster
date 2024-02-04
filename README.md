@@ -7,7 +7,7 @@
 
 ___
 &nbsp;
-[BackEnd 보러가기](https://github.com/wonguk89/roster)
+[FrontEnd 보러가기](https://github.com/wonguk89/roster_front)
 >스케쥴 생성 조건
 
 
