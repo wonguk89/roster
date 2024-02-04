@@ -15,5 +15,5 @@ public interface CalendarScheduleMapper {
 
     void updateCalendarSchedule(CalendarSchedule calendarSchedule);
 
-    void deleteCalendarSchedule(int sno);
+    void deleteCalendarSchedule(String date);
 }

@@ -62,9 +62,10 @@ public class CalendarScheduleController {
     }
     // 확정스케쥴 정보삭제
     @DeleteMapping("/delete")
-    public ResponseEntity<String> deleteCalendarSchedule(@RequestBody List<CalendarSchedule> calendarSchedules) {
+    public ResponseEntity<String> deleteCalendarSchedule(
+            @RequestParam(name = "date") String date) {
         try {
-            calendarScheduleService.deleteCalendarSchedule(calendarSchedules);
+            calendarScheduleService.deleteCalendarSchedule(date);
             return ResponseEntity.ok("CalendarSchedules deleted successfully");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)

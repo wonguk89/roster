@@ -70,9 +70,7 @@ public class CalendarScheduleService {
      * @param calendarSchedules 삭제할 캘린더 일정 목록
      */
     @Transactional
-    public void deleteCalendarSchedule(List<CalendarSchedule> calendarSchedules) {
-        for (CalendarSchedule calendarSchedule : calendarSchedules) {
-            calendarScheduleMapper.deleteCalendarSchedule(calendarSchedule.getSno());
-        }
+    public void deleteCalendarSchedule(String date) {
+        calendarScheduleMapper.deleteCalendarSchedule(date);
     }
 }

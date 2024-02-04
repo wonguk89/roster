@@ -25,8 +25,8 @@
         WHERE sno = #{sno}
     </update>
 
-    <delete id="deleteCalendarSchedule" parameterType="com.app.roster.dto.CalendarSchedule">
-        DELETE FROM CalendarSchedule WHERE sno = #{sno}
+    <delete id="deleteCalendarSchedule" parameterType="String">
+        DELETE FROM CalendarSchedule WHERE DATE_FORMAT(date, '%Y-%m-%d') LIKE CONCAT('%', #{date}, '%')
     </delete>
 
 </mapper>
