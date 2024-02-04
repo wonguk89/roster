@@ -398,12 +398,12 @@ public class RandomService {
         }
         allRandomLeaveRequests.addAll(existingLeaveRequests);
         // 전체 결과 출력
-        System.out.println("===== 전체 결과 =====");
+/*        System.out.println("===== 전체 결과 =====");
         for (Employee employee : employees) {
             int employeeId = employee.getEmployeeID();
             int employeeHolidayCnt = calculateEmployeeHolidayCount(allRandomLeaveRequests, employeeId);
             System.out.println("Employee ID: " + employeeId + ", Remaining Holiday Count: " + employeeHolidayCnt);
-        }
+        }*/
 
         return allRandomLeaveRequests;
     }
@@ -447,7 +447,7 @@ public class RandomService {
                 // 새롭게 선택된 randomDate에 대한 조건 검사
                 if (!isEmployeeAlreadyOnLeave(employeeExistingLeaveRequests, randomHolidays, randomDate) &&
                         !isExceedingMaxEmployeesOnLeave(randomDate, dateCountMap) &&
-                        !isExceedingMaxInterval(randomDate, randomHolidays, 7)) {
+                        !isExceedingMaxInterval(randomDate, randomHolidays, 7, 2)) {
                     break; // 조건을 만족하면 while 루프 종료
                 }
 
@@ -555,24 +555,28 @@ public class RandomService {
      * @param maxInterval            최대 간격
      * @return 최대 간격을 초과하는 경우 true, 그렇지 않으면 false
      */
-    private boolean isExceedingMaxInterval(LocalDate randomDate, List<LeaveRequest> existingLeaveRequests, int maxInterval) {
-        // 이미 추가된 휴무일 중에서 가장 가까운 이전 휴무일과 다음 휴무일 찾기
+    private boolean isExceedingMaxInterval(LocalDate randomDate, List<LeaveRequest> existingLeaveRequests, int maxInterval, int minInterval) {
+        // 이미 추가된 휴무일 중에서 가장 가까운 이전 휴무일 찾기
         LocalDate closestPreviousLeaveDate = existingLeaveRequests.stream()
                 .map(leaveRequest -> LocalDate.parse(leaveRequest.getLeaveDate()))
                 .filter(leaveDate -> leaveDate.isBefore(randomDate))
                 .max(Comparator.naturalOrder())
                 .orElse(null);
 
-        LocalDate closestNextLeaveDate = existingLeaveRequests.stream()
-                .map(leaveRequest -> LocalDate.parse(leaveRequest.getLeaveDate()))
-                .filter(leaveDate -> leaveDate.isAfter(randomDate))
-                .min(Comparator.naturalOrder())
-                .orElse(null);
+        // 최대 간격 및 최소 간격을 초과하는 경우 true 반환
+        boolean exceedingMaxInterval = (closestPreviousLeaveDate != null && ChronoUnit.DAYS.between(closestPreviousLeaveDate, randomDate) > maxInterval);
+        boolean withinMinInterval = (closestPreviousLeaveDate != null && ChronoUnit.DAYS.between(closestPreviousLeaveDate, randomDate) < minInterval);
 
-        // 최대 간격을 초과하는 경우 true 반환
-        return (closestPreviousLeaveDate != null && ChronoUnit.DAYS.between(closestPreviousLeaveDate, randomDate) > maxInterval) ||
-                (closestNextLeaveDate != null && ChronoUnit.DAYS.between(randomDate, closestNextLeaveDate) > maxInterval);
+        // 콘솔에 로그 출력
+/*        System.out.println("Random Date: " + randomDate);
+        System.out.println("Closest Previous Leave Date: " + closestPreviousLeaveDate);
+        System.out.println("Exceeding Max Interval: " + exceedingMaxInterval);
+        System.out.println("Within Min Interval: " + withinMinInterval);*/
+
+        return exceedingMaxInterval || withinMinInterval;
     }
+
+
 }
 
 
