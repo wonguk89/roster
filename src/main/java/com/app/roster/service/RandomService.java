@@ -447,7 +447,7 @@ public class RandomService {
                 // 새롭게 선택된 randomDate에 대한 조건 검사
                 if (!isEmployeeAlreadyOnLeave(employeeExistingLeaveRequests, randomHolidays, randomDate) &&
                         !isExceedingMaxEmployeesOnLeave(randomDate, dateCountMap) &&
-                        !isExceedingMaxInterval(randomDate, randomHolidays, 7, 2)) {
+                        !isExceedingMaxInterval(randomDate, randomHolidays, 7, 4)) {
                     break; // 조건을 만족하면 while 루프 종료
                 }
 
